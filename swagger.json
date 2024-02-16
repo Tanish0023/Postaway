@@ -1,0 +1,536 @@
+{
+    "openapi": "3.0.0",
+    "info":{
+        "version":"1.0.0",
+        "description": "API for project Postaway. In this we can add posts, comments and like them.",
+        "title":"Postaway project API"
+    },
+    "servers":[
+        {
+            "url":"http://localhost:3200"
+        }
+    ],
+    "components":{
+        "securitySchemes":{
+            "JWT":{
+                "in":"header",
+                "name":"Authorization",
+                "type":"apiKey"
+            }
+        }
+    },
+    "paths":{
+        "/api/signin":{
+            "post":{
+                "tags":["User"],
+                "summary":"signip",
+                "description":"This API helps users to signin",
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "email":{
+                                        "type":"string"
+                                    },
+                                    "password":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"Invalid Credentials"
+                    },
+                    "404":{
+                        "description":"User not found"
+                    }
+                }
+            }
+        },
+
+        "/api/signup":{
+            "post":{
+                "tags":["User"],
+                "summary":"signup",
+                "description":"This API helps users to signun",
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "name":{
+                                        "type":"string"
+                                    },
+                                    "email":{
+                                        "type":"string"
+                                    },
+                                    "password":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "201":{
+                        "description":"User added successfully!!"
+                    },
+                    "400":{
+                        "description":"Invalid Credentials"
+                    },
+                    "404":{
+                        "description":"Email alreay in use"
+                    }
+                }
+            }
+        },
+    
+
+
+
+
+
+        "/api/posts/all":{
+            "get":{
+                "tags":["Posts"],
+
+                "summary":"Get all Posts",
+                "description":"This Api helps in extracting all the posts data",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+
+        "/api/posts/{id}":{
+            "get":{
+                "tags":["Posts"],
+
+                "summary":"Get Post by Id",
+                "description":"This Api helps in extracting specific posts data by passing its Id",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the post to get post data"
+                }
+              ],
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "404":{
+                        "description":" Post not found"
+                    }
+                }
+            },
+            "delete":{
+                "tags":["Posts"],
+
+                "summary":"Delete Post by Id",
+                "description":"This Api helps in deleting specific posts by passing its Id",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the user to delete post data"
+                }
+              ],
+                "responses":{
+                    "200":{
+                        "description":"Post deleted successfully!!"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "400":{"description":"You are authorized to delete this post"},
+                    "404":{
+                        "description":"Post not found"
+                    }
+                }
+            },
+            "put":{
+                "tags":["Posts"],
+
+                "summary":"Update Post by Id",
+                "description":"This Api helps in update specific posts by passing its Id",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "caption":{
+                                        "type":"string"
+                                    },
+                                    "imageUrl":{
+                                        "type":"string"
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the user to update post data"
+                }
+              ],
+                "responses":{
+                    "200":{
+                        "description":"Post updated successfully!!"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "400":{"description":"You are authorized to update this post"},
+                    "404":{
+                        "description":"Post not found"
+                    }
+                }
+            }
+        },
+
+        "/api/posts/":{
+            "get":{
+                "tags":["Posts"],
+
+                "summary":"Get your Posts",
+                "description":"This Api helps in extracting all the posts that you posted",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+
+            "post":{
+                "tags":["Posts"],
+                "summary":"Post",
+                "description":"This Api helps in posting",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "caption":{
+                                        "type":"string"
+                                    },
+                                    "imageUrl":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"Invalid Credentials"
+                    },
+                    "404":{
+                        "description":"User not found"
+                    }
+                }
+            }
+        },
+
+       
+
+
+
+
+        "/api/comments/{id}":{
+            "get":{
+                "tags":["Comments"],
+
+                "summary":"Get comment by Id",
+                "description":"This Api helps in extracting specific comment by passing its Id",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the comment to get post data"
+                }
+              ],
+                "responses":{
+                    "202":{
+                        "description":"OK"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "404":{
+                        "description":"No data found"
+                    }
+                }
+            },
+
+            "post":{
+                "tags":["Comments"],
+
+                "summary":"Post comment by post Id",
+                "description":"This Api helps in posting comment in specific posts by passing post Id",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the post to post comment"
+                }
+                ],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    
+                                    "content":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"Comment Added successfully"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    }, 
+                    "404":{
+                        "description":"Cannot add comment to this post id"
+                    }
+                }
+            },
+
+            "delete":{
+                "tags":["Comments"],
+
+                "summary":"Delete comment by Id",
+                "description":"This Api helps in deleting specific comment by passing its Id",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the comment to delete it"
+                }
+              ],
+                "responses":{
+                    "200":{
+                        "description":"Comment Deleted successfully"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "400":{"description":"You are not authorized to delete this comment"},
+                    "404":{
+                        "description":"Comment not found"
+                    }
+                }
+            },
+            "put":{
+                "tags":["Comments"],
+
+                "summary":"Update comment by Id",
+                "description":"This Api helps in update specific comment by passing its Id",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "content":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the post to update comment"
+                }
+              ],
+                "responses":{
+                    "200":{
+                        "description":"Comment Updated successfully"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "400":{"description":"You are not authorized to update this comment"},
+                    "404":{
+                        "description":"Comment not found"
+                    }
+                }
+            }
+        },
+        
+
+
+
+
+
+
+        "/api/likes/{postId}":{
+            "get":{
+                "tags":["Likes"],
+
+                "summary":"Get likes by Id",
+                "description":"This Api helps in extracting likes of specific post by passing postId",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "postId",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the post to get likes data"
+                }
+              ],
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "404":{
+                        "description":"Data not found"
+                    }
+                }
+            }
+        },
+        
+        "/api/likes/toggle/{postId}":{
+            "get":{
+                "tags":["Likes"],
+
+                "summary":"Toggle likes of post",
+                "description":"This Api helps in toggle likes of specific post by passing postId",
+                "security":[
+                    {"JWT":{}}
+                ],
+                "parameters": [
+                {
+                  "in": "path",
+                  "name": "postId",
+                  "schema": {
+                    "type": "integer"
+                  },
+                  "required": true,
+                  "description": "Numeric ID of the post to toggle likes"
+                }
+              ],
+                "responses":{
+                    "200":{
+                        "description":"ok"
+                    },
+                    "401":{
+                        "description": "Unauthorized"
+                    },
+                    "404":{
+                        "description":"Post not found"
+                    }
+                }
+            }
+        }
+
+    }
+}
