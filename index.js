@@ -1,11 +1,15 @@
 import express from "express";
 import swagger from "swagger-ui-express";
-
+import cookieParser from "cookie-parser";
 //
 import jwtAuth from "./src/middlewares/jwt.middleware.js";
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import { ApplicationError } from "./src/error handler/applicationError.js";
 import apidocs from "./swagger.json" assert { type: "json" };
+import { connectToDb } from "./src/config/db.js";
+
+import dotenv from "dotenv";
+dotenv.config();
 //
 
 //Routers
@@ -20,13 +24,14 @@ import likeRouter from "./src/features/like/like.routes.js";
 const server = express();
 server.use(express.static("public"));
 server.use(express.urlencoded({ extended: true }));
+server.use(cookieParser());
 
 //Routes
 
-server.use(loggerMiddleware);
+// server.use(loggerMiddleware);
 server.use(express.json());
 server.use("/api-docs", swagger.serve, swagger.setup(apidocs));
-server.use("/api", userRouter);
+server.use("/api/users", userRouter);
 server.use("/api/posts", jwtAuth, postRouter);
 server.use("/api/comments", jwtAuth, commentRouter);
 server.use("/api/likes", jwtAuth, likeRouter);
@@ -57,6 +62,7 @@ server.use((req, res) => {
 
 //
 
-server.listen(3200, () => {
-  console.log("Server is listening at 3200");
+server.listen(8000, async () => {
+  await connectToDb();
+  console.log("Server is listening at 8000");
 });

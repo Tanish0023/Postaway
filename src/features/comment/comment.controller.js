@@ -1,5 +1,3 @@
-import commentModel from "./comment.model.js";
-
 export default class commentController {
   getComment(req, res) {
     const postId = req.params.id;

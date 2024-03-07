@@ -4,8 +4,13 @@ import userController from "./user.controller.js";
 const router = express.Router();
 const userControllerCall = new userController();
 
-router.get("/", userControllerCall.getUser);
-router.post("/signup", userControllerCall.addUser);
-router.post("/signin", userControllerCall.confirmUser);
+// router.get("/", userControllerCall.getUser);
+router.post("/signup", userControllerCall.signUn);
+router.post("/signin", userControllerCall.signIn);
+router.get("/logout", userControllerCall.userLogout);
+// router.post("/logout-alll-devices", userControllerCall.confirmUser);
+router.get("/get-details/:userId", userControllerCall.getDetails);
+// router.get("/get-all-details", userControllerCall.userLogout);
+// router.get("/update-details", userControllerCall.userLogout);
 
 export default router;

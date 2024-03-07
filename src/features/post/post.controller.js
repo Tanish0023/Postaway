@@ -1,68 +1,85 @@
-import postModel from "./post.model.js";
+import {
+  addPost,
+  deletePost,
+  getAllPost,
+  getPost,
+  getUserPost,
+  updatePost,
+} from "./post.repository.js";
 
 export default class postController {
-  getAll(req, res) {
-    const posts = postModel.getAllPosts();
-
+  async getAll(req, res) {
+    const posts = await getAllPost();
     res.status(200).json(posts);
   }
 
-  getSpePost(req, res) {
+  async getSpePost(req, res) {
     const id = req.params.id;
 
-    const post = postModel.getSpecificPost(id);
-    res.status(200).json(post);
+    const result = await getPost(id);
+
+    if (result.status) {
+      res.status(result.statusCode).json(result.message);
+    } else {
+      res.status(result.statusCode).send(result.message);
+    }
   }
 
-  addPost(req, res) {
+  async addPost(req, res) {
+    const { caption } = req.body;
     const imageUrl = "images/" + req.file.filename;
 
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const userId = payload.userId;
 
-    postModel.add(userId, req.body.caption, imageUrl);
-
-    res.status(402).send("Post Addeed successfully!!");
+    const post = await addPost(userId, caption, imageUrl);
+    res.status(402).json(post);
   }
 
-  specificUserPost(req, res) {
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+  async specificUserPost(req, res) {
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const userId = payload.userId;
 
-    const posts = postModel.getSpecificUserPost(userId);
+    const result = await getUserPost(userId);
 
-    res.status(200).json(posts);
+    res.status(200).json(result);
   }
 
-  deletePost(req, res) {
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+  async deletePost(req, res) {
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const userId = payload.userId;
 
     const id = req.params.id;
-
-    postModel.delete(id, userId);
-    res.status(200).send("Post deleted successfully!!");
+    const result = await deletePost(id, userId);
+    if (result.status) {
+      res.status(result.statusCode).send(result.message);
+    } else {
+      res.status(result.statusCode).send(result.message);
+    }
   }
 
-  updatePost(req, res) {
+  async updatePost(req, res) {
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
+    let payload = JSON.parse(atob(parts[1]));
+    const userId = payload.userId;
+
+    const imageUrl = "images/" + req.file.filename;
+    const postId = req.params.id;
     const caption = req.body.caption;
-    const imageUrl = req.body.imageUrl;
 
-    const token = req.get("Authorization");
-    let parts = token.split(".");
-    let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const result = await updatePost(postId, userId, caption, imageUrl);
 
-    const id = req.params.id;
-
-    postModel.update(id, userId, caption, imageUrl);
-
-    res.status(200).send("Post updated successfully!!");
+    if (result.status) {
+      res.status(result.statusCode).json(result.message);
+    } else {
+      res.status(result.statusCode).send(result.message);
+    }
   }
 }

@@ -1,15 +1,15 @@
 import jwt from "jsonwebtoken";
 
 const jwtAuth = (req, res, next) => {
-  const token = req.headers["authorization"];
+  const { jwtToken } = req.cookies;
   //   console.log(token);
 
-  if (!token) {
+  if (!jwtToken) {
     return res.status(401).send("Unauthorized");
   }
 
   try {
-    const payload = jwt.verify(token, "AIb6d35fvJM4O9pXqXQNla2jBCH9kuLz");
+    const payload = jwt.verify(jwtToken, "AIb6d35fvJM4O9pXqXQNla2jBCH9kuLz");
   } catch (err) {
     return res.status(401).send("Unauthorized");
   }

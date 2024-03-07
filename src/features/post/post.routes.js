@@ -10,6 +10,10 @@ postRouter.get("/:id", postControllerCall.getSpePost);
 postRouter.get("/", postControllerCall.specificUserPost);
 postRouter.post("/", uploadFile.single("imageUrl"), postControllerCall.addPost);
 postRouter.delete("/:id", postControllerCall.deletePost);
-postRouter.put("/:id", postControllerCall.updatePost);
+postRouter.put(
+  "/:id",
+  uploadFile.single("imageUrl"),
+  postControllerCall.updatePost
+);
 
 export default postRouter;

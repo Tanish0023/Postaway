@@ -1,5 +1,3 @@
-import likeModel from "./like.model.js";
-
 export default class likeController {
   post(req, res) {
     const postId = req.params.postId;
