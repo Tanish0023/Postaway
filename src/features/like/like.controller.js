@@ -1,13 +1,12 @@
 export default class likeController {
-  post(req, res) {
+  getLikes(req, res) {
     const postId = req.params.postId;
 
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
-
-    const likesArray = likeModel.getLikes(postId);
+    const userId = payload.userId;
+    // const likesArray = likeModel.getLikes(postId);
 
     if (likesArray.length > 0) {
       res.status(200).json(likesArray);
@@ -19,12 +18,12 @@ export default class likeController {
   toggle(req, res) {
     const postId = req.params.postId;
 
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const userId = payload.userId;
 
-    const result = likeModel.toggle(postId, userId);
+    // const result = likeModel.toggle(postId, userId);
     if (result) {
       res.status(200).send("Like Added to post");
     } else {

@@ -1,57 +1,73 @@
+import {
+  addComment,
+  deleteComment,
+  getComment,
+  updateComment,
+} from "./comment.repository.js";
+
 export default class commentController {
-  getComment(req, res) {
-    const postId = req.params.id;
-    const comments = commentModel.get(postId);
+  async getComment(req, res) {
+    const postId = req.params.postId;
 
-    if (comments.length > 0) {
-      res.status(202).json(comments);
+    const result = await getComment(postId);
+
+    if (result.status) {
+      res.status(result.statusCode).json(result.message);
     } else {
-      res.status(404).send("No data found");
+      res.status(result.statusCode).send(result.message);
     }
   }
 
-  postComment(req, res) {
-    const postId = req.params.id;
+  async postComment(req, res) {
+    const postId = req.params.postId;
     const content = req.body.content;
 
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const userId = payload.userId;
 
-    const result = commentModel.add(userId, postId, content);
-
-    if (result) {
-      res.status(200).send("Comment Added successfully");
+    const result = await addComment(userId, postId, content);
+    if (result.status) {
+      res
+        .status(result.statusCode)
+        .json({ res: "Comment added sucessfully!!", comment: result.message });
     } else {
-      res.status(404).send("Cannot add comment to this post id");
+      res.status(result.statusCode).send(result.message);
     }
   }
 
-  deleteComment(req, res) {
-    const commentId = req.params.id;
+  async deleteComment(req, res) {
+    const commentId = req.params.commentId;
 
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const userId = payload.userId;
 
-    const result = commentModel.delete(userId, commentId);
+    const result = await deleteComment(commentId, userId);
 
-    res.status(200).send("Comment Deleted successfully");
+    res.status(result.statusCode).send(result.message);
   }
 
-  putComment(req, res) {
-    const commentId = req.params.id;
+  async putComment(req, res) {
+    const commentId = req.params.commentId;
     const content = req.body.content;
 
-    const token = req.get("Authorization");
-    let parts = token.split(".");
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userID;
+    const userId = payload.userId;
 
-    commentModel.update(userId, commentId, content);
+    const result = await updateComment(commentId, userId, content);
 
-    res.status(200).send("Comment Updated successfully");
+    if (result.status) {
+      res.status(result.statusCode).json({
+        res: "Comment Updated sucessfully!!",
+        comment: result.message,
+      });
+    } else {
+      res.status(result.statusCode).send(result.message);
+    }
   }
 }

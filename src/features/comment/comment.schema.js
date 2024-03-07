@@ -1,25 +1,20 @@
 import mongoose from "mongoose";
 
-export const postSchema = new mongoose.Schema({
+export const commentScheme = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  caption: {
-    type: String,
+  postId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Post",
+    required: true,
   },
-  imageUrl: {
+  content: {
     type: String,
     required: true,
   },
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment",
-      default: undefined,
-    },
-  ],
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
