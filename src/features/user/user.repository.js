@@ -123,3 +123,31 @@ export const userDetails = async (userId) => {
     throw new ApplicationError("Internal server error", 500);
   }
 };
+
+export const resetPassword = async (userId, newPassword) => {
+  try {
+    const userModel = mongoose.model("users", userSchema);
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await userModel.findByIdAndUpdate(userId, {
+      password: hashedNewPassword,
+    });
+    // const savedUpdatedUserPassword = await user.save();
+    if (user) {
+      return {
+        status: true,
+        message: "Password updated successfully",
+        statusCode: 200,
+      };
+    } else {
+      return {
+        status: false,
+        message: "User not found, please enter a valid email",
+        statusCode: 404,
+      };
+    }
+  } catch (err) {
+    throw new ApplicationError("Internal server error", 500);
+  }
+};
