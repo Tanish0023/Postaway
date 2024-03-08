@@ -1,33 +1,39 @@
+import { getLikes, toggleLike } from "./like.repository.js";
+
 export default class likeController {
-  getLikes(req, res) {
-    const postId = req.params.postId;
+  async getLikes(req, res) {
+    const id = req.params.id;
 
-    const { jwtToken } = req.cookies;
-    let parts = jwtToken.split(".");
-    let payload = JSON.parse(atob(parts[1]));
-    const userId = payload.userId;
-    // const likesArray = likeModel.getLikes(postId);
-
-    if (likesArray.length > 0) {
-      res.status(200).json(likesArray);
+    const result = await getLikes(id);
+    if (result.status) {
+      res.status(200).json(result.message);
     } else {
-      res.status(404).send("Data not found");
+      res.status(404).send(result.message);
     }
   }
 
-  toggle(req, res) {
-    const postId = req.params.postId;
+  async toggle(req, res) {
+    const id = req.params.id;
+    const type = req.query.type;
 
     const { jwtToken } = req.cookies;
     let parts = jwtToken.split(".");
     let payload = JSON.parse(atob(parts[1]));
     const userId = payload.userId;
 
-    // const result = likeModel.toggle(postId, userId);
-    if (result) {
-      res.status(200).send("Like Added to post");
+    // console.log(`UserId: ${userId}\nid: ${id}\ntype: ${type}`);
+    const result = await toggleLike(userId, id, type);
+
+    if (result.status) {
+      if (result.added) {
+        res
+          .status(result.statusCode)
+          .json({ res: "Like added successfully!!", like: result.message });
+      } else {
+        res.status(result.statusCode).send(result.message);
+      }
     } else {
-      res.status(200).send("Like removed to post");
+      res.status(result.statusCode).send(result.message);
     }
   }
 }
