@@ -1,5 +1,11 @@
 import jwt from "jsonwebtoken";
-import { userRegister, signin, userDetails } from "./user.repository.js";
+import {
+  userRegister,
+  signin,
+  userDetails,
+  allDetails,
+  updateDetails,
+} from "./user.repository.js";
 import { ApplicationError } from "../../error handler/applicationError.js";
 
 export default class userController {
@@ -56,7 +62,24 @@ export default class userController {
 
   getDetails = async (req, res) => {
     const user = await userDetails(req.params.userId);
-    console.log(user);
     res.status(user.statusCode).send(user.message);
+  };
+
+  getAllDetails = async (req, res) => {
+    const users = await allDetails();
+    res.status(200).send(users);
+  };
+
+  updateDetails = async (req, res) => {
+    const { name, email, gender } = req.body;
+
+    const { jwtToken } = req.cookies;
+    let parts = jwtToken.split(".");
+    let payload = JSON.parse(atob(parts[1]));
+    const userId = payload.userId;
+
+    const user = await updateDetails(userId, name, email, gender);
+
+    res.status(200).send(user);
   };
 }

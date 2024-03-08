@@ -124,6 +124,20 @@ export const userDetails = async (userId) => {
   }
 };
 
+export const allDetails = async () => {
+  try {
+    const userModel = mongoose.model("users", userSchema);
+
+    const users = await userModel
+      .find()
+      .select("name email gender post friends");
+
+    return users;
+  } catch (err) {
+    throw new ApplicationError("Internal server error", 500);
+  }
+};
+
 export const resetPassword = async (userId, newPassword) => {
   try {
     const userModel = mongoose.model("users", userSchema);
@@ -150,4 +164,18 @@ export const resetPassword = async (userId, newPassword) => {
   } catch (err) {
     throw new ApplicationError("Internal server error", 500);
   }
+};
+
+export const updateDetails = async (userId, name, email, gender) => {
+  const userModel = mongoose.model("users", userSchema);
+
+  const user = await userModel
+    .findByIdAndUpdate(userId, {
+      name: name,
+      email: email,
+      gender: gender,
+    })
+    .select("name email gender post friends");
+
+  return user;
 };

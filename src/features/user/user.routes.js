@@ -10,7 +10,7 @@ router.post("/signin", userControllerCall.signIn);
 router.get("/logout", userControllerCall.userLogout);
 // router.post("/logout-alll-devices", userControllerCall.confirmUser);
 router.get("/get-details/:userId", userControllerCall.getDetails);
-// router.get("/get-all-details", userControllerCall.userLogout);
-// router.get("/update-details", userControllerCall.userLogout);
+router.get("/get-all-details", userControllerCall.getAllDetails);
+router.put("/update-details/:userId", userControllerCall.updateDetails);
 
 export default router;

@@ -18,6 +18,7 @@ import postRouter from "./src/features/post/post.routes.js";
 import commentRouter from "./src/features/comment/comment.routes.js";
 import likeRouter from "./src/features/like/like.routes.js";
 import otpRoutes from "./src/features/otp/otp.routes.js";
+import friendRouter from "./src/features/friends/friends.routes.js";
 //
 
 //
@@ -37,6 +38,7 @@ server.use("/api/posts", jwtAuth, postRouter);
 server.use("/api/comments", jwtAuth, commentRouter);
 server.use("/api/likes", jwtAuth, likeRouter);
 server.use("/api/otp", otpRoutes);
+server.use("/api/friends", friendRouter);
 //
 
 //
